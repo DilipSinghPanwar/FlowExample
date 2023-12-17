@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnStart).setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 getUserList().forEach {
-                    Log.w("FLOW-EXAMPLE", it)
+                    Log.w("TAG", it)
                 }
             }
         }

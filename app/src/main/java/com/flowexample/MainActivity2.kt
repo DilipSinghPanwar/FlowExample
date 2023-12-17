@@ -8,11 +8,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import java.util.concurrent.Flow
 
-class MainActivity1 : AppCompatActivity() {
-
-    val channel = Channel<Int>()
+class MainActivity2 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,22 +23,24 @@ class MainActivity1 : AppCompatActivity() {
         }
     }
 
-    private fun producer(){
-        CoroutineScope(Dispatchers.Main).launch {
-            channel.send(1)
-            channel.send(2)
-            channel.send(3)
-            channel.send(4)
+    private fun producer() = flow<Int>{
+        val list = mutableListOf<Int>(1,2,3,4,5,6,7,8,9)
+        list.forEach {
+            delay(1000)
+            emit(it)
         }
     }
 
     private fun consumer(){
+        val job = CoroutineScope(Dispatchers.Main).launch {
+            val data = producer()
+            data.collect{
+                Log.w("TAG", "consumer: $it")
+            }
+        }
         CoroutineScope(Dispatchers.Main).launch {
-            Log.w("TAG", "consumer: "+channel.receive())
-            Log.w("TAG", "consumer: "+channel.receive())
-            Log.w("TAG", "consumer: "+channel.receive())
-            Log.w("TAG", "consumer: "+channel.receive())
+            delay(4500)
+            job.cancel()
         }
     }
-
 }
