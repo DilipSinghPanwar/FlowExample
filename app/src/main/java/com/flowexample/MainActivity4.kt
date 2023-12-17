@@ -12,14 +12,16 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.util.concurrent.Flow
 
-class MainActivity2 : AppCompatActivity() {
+class MainActivity4 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         findViewById<Button>(R.id.btnStart).setOnClickListener {
             producer()
-            consumer()
+            //multiple consumer
+            consumer1()
+            consumer2()
         }
     }
 
@@ -31,11 +33,20 @@ class MainActivity2 : AppCompatActivity() {
         }
     }
 
-    private fun consumer(){
+    private fun consumer1(){
         CoroutineScope(Dispatchers.Main).launch {
             val data = producer()
             data.collect{
-                Log.w("TAG", "consumer: $it")
+                Log.w("TAG", "consumer - 1: $it")
+            }
+        }
+    }
+    private fun consumer2(){
+        CoroutineScope(Dispatchers.Main).launch {
+            val data = producer()
+            delay(4000)
+            data.collect{
+                Log.w("TAG", "consumer - 2: $it")
             }
         }
     }

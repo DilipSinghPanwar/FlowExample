@@ -6,37 +6,44 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.util.concurrent.Flow
 
-class MainActivity2 : AppCompatActivity() {
+class MainActivity7 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         findViewById<Button>(R.id.btnStart).setOnClickListener {
             producer()
-            consumer()
+            consumer1()
         }
     }
 
-    private fun producer() = flow<Int>{
-        val list = mutableListOf<Int>(1,2,3,4,5,6,7,8,9)
+    private fun producer() = flow<Int> {
+        val list = mutableListOf<Int>(1, 2, 3, 4, 5, 6, 7, 8, 9)
         list.forEach {
             delay(1000)
             emit(it)
         }
     }
 
-    private fun consumer(){
+    //non terminal operator
+    private fun consumer1() {
         CoroutineScope(Dispatchers.Main).launch {
             val data = producer()
-            data.collect{
-                Log.w("TAG", "consumer: $it")
-            }
+                .map {
+                    it * 2
+                }
+                .filter {
+                    it > 4
+                }
+                .collect {
+                    Log.w("TAG", "consumer - $it")
+                }
         }
     }
 }

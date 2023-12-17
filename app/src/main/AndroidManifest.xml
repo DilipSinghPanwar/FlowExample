@@ -13,7 +13,7 @@
         android:theme="@style/Theme.FlowExample"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity2"
+            android:name=".MainActivity7"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

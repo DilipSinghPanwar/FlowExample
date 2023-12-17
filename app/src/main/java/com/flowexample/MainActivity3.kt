@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.util.concurrent.Flow
 
-class MainActivity2 : AppCompatActivity() {
+class MainActivity3 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +32,16 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     private fun consumer(){
-        CoroutineScope(Dispatchers.Main).launch {
+        val job = CoroutineScope(Dispatchers.Main).launch {
             val data = producer()
             data.collect{
                 Log.w("TAG", "consumer: $it")
             }
+        }
+        //consumer stop after 4.5 sec then producer will stop producing data
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(4500)
+            job.cancel()
         }
     }
 }
